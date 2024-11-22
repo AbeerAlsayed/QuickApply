@@ -2,23 +2,51 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Company;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Http\Request;
+use App\Http\Requests\CountryRequest;
+use App\Http\Resources\CountryResource;
+use App\Models\Country;
+use App\Services\CountryService;
 
-class CountryController extends Controller
+class CountryController extends BaseController
 {
-    use HasFactory;
+    private $countryService;
 
-    protected $fillable = [
-        'name',
-        'code',
-        'phone_code'
-    ];
-
-    // العلاقة مع الشركات
-    public function companies()
+    public function __construct(CountryService $countryService)
     {
-        return $this->hasMany(Company::class);
+        $this->countryService = $countryService;
+    }
+
+    // عرض جميع الدول
+    public function index()
+    {
+        $countries = Country::all();
+        return $this->sendSuccess(CountryResource::collection($countries), 'Countries retrieved successfully');
+    }
+
+    // عرض دولة معينة
+    public function show(Country $country)
+    {
+        return $this->sendSuccess(new CountryResource($country), 'Country retrieved successfully');
+    }
+
+    // إنشاء دولة جديدة
+    public function store(CountryRequest $request)
+    {
+        $country = $this->countryService->create($request->validated());
+        return $this->sendSuccess(new CountryResource($country), 'Country created successfully');
+    }
+
+    // تحديث بيانات دولة
+    public function update(CountryRequest $request, Country $country)
+    {
+        $updatedCountry = $this->countryService->update($country, $request->validated());
+        return $this->sendSuccess(new CountryResource($updatedCountry), 'Country updated successfully');
+    }
+
+    // حذف دولة
+    public function destroy(Country $country)
+    {
+        $this->countryService->delete($country);
+        return $this->sendSuccess([], 'Country deleted successfully');
     }
 }
