@@ -6,6 +6,7 @@ use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\UserService;
+use Illuminate\Http\Request;
 
 class UserController extends BaseController
 {
@@ -51,5 +52,18 @@ class UserController extends BaseController
         // التفويض للـ Service لمعالجة العملية
         $this->userService->delete($user);
         return $this->sendSuccess([], 'User deleted successfully');
+    }
+
+    public function filter(Request $request)
+    {
+        // اجلب الإيميل من الطلب
+        $email = $request->query('email');
+
+        // فلتر المستخدمين باستخدام Scope
+        $users = User::filterByEmail($email)->get();
+
+        // أعد قائمة المستخدمين
+        return response()->json($users);
+
     }
 }

@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'facebook',
+        'password',
         'instagram',
         'linkedin',
         'phone_number',
@@ -51,5 +52,18 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+
+    /**
+     * Scope a query to filter users by email.
+     */
+    public function scopeFilterByEmail($query, $email)
+    {
+        if ($email) {
+            return $query->where('email', 'like', "%$email%");
+        }
+        return $query;
+
     }
 }

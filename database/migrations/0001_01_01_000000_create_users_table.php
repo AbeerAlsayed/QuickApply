@@ -12,19 +12,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id(); // رقم المستخدم (Primary Key)
-            $table->string('name'); // اسم المستخدم
-            $table->string('email')->unique(); // الإيميل
-            $table->string('facebook')->nullable(); // حساب فيسبوك (اختياري)
-            $table->string('instagram')->nullable(); // حساب إنستاغرام (اختياري)
-            $table->string('linkedin')->nullable(); // حساب لينكد إن (اختياري)
-            $table->string('phone_number')->nullable(); // رقم الهاتف (اختياري)
-            $table->string('address')->nullable(); // العنوان (اختياري)
-            $table->string('cv_path')->nullable(); // رابط ملف السيرة الذاتية (اختياري)
-            $table->string('desired_position'); // البوزشن المرغوب
-            $table->text('description')->nullable(); // وصف إضافي (اختياري)
-            $table->timestamps(); // تاريخ الإنشاء والتحديث
+            $table->id();
+            $table->string('name');
+            $table->string('password');
+            $table->string('email')->unique();
+            $table->string('facebook')->nullable();
+            $table->string('instagram')->nullable();
+            $table->string('linkedin')->nullable();
+            $table->string('phone_number')->nullable();
+            $table->string('address')->nullable();
+            $table->string('cv_path')->nullable();
+            $table->string('desired_position')->default('Not Specified'); // تعيين قيمة افتراضية
+            $table->text('description')->nullable();
+            $table->timestamp('email_verified_at')->nullable(); // إضافة عمود التحقق من البريد الإلكتروني
+            $table->rememberToken(); // إضافة عمود remember_token
+            $table->timestamps();
         });
+
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
