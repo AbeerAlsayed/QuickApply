@@ -19,16 +19,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
-        'facebook',
         'password',
-        'instagram',
-        'linkedin',
-        'phone_number',
-        'address',
-        'cv_path',
-        'desired_position',
+        'email',
+        'cv',
+        'position',
         'description',
+        'email_verified_at',
     ];
 
     /**

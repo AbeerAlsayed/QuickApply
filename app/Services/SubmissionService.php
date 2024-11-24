@@ -7,14 +7,14 @@ use Illuminate\Support\Facades\DB;
 
 class SubmissionService
 {
-    public function create(array $data): Submission
+    public function create(array $data)
     {
         return DB::transaction(function () use ($data) {
             return Submission::create([
                 'user_id' => $data['user_id'],
                 'company_id' => $data['company_id'],
                 'email' => $data['email'],
-                'description' => $data['description'] ?? 'No description provided',
+                'description' => isset($data['description']) ? $data['description'] : 'No description provided',
                 'is_sent' => false,
             ]);
         });

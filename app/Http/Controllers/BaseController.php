@@ -10,7 +10,7 @@ class BaseController extends Controller
     public function sendSuccess($result,$message = 'Operation successful')
     {
         return response()->json([
-            'success' => true,
+            'status' => true,
             'message' => $message,
             'data' => $result,
         ], 200);
@@ -20,7 +20,7 @@ class BaseController extends Controller
     public function sendError($message, array $errors = [],$code = 400)
     {
         return response()->json([
-            'success' => false,
+            'status' => false,
             'message' => $message,
             'errors' => $errors,
         ], $code);

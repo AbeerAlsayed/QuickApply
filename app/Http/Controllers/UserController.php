@@ -18,11 +18,23 @@ class UserController extends BaseController
     }
 
     // عرض جميع المستخدمين
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
-        return $this->sendSuccess(UserResource::collection($users), 'Users retrieved successfully');
+        $perPage = $request->input('per_page', 10); // العدد الافتراضي 10 إذا لم يتم تمرير 'per_page'
+        $users = User::paginate($perPage);
+
+        return $this->sendSuccess([
+            'data' => UserResource::collection($users),
+            'pagination' => [
+                'total' => $users->total(),
+                'count' => $users->count(),
+                'per_page' => $users->perPage(),
+                'current_page' => $users->currentPage(),
+                'total_pages' => $users->lastPage(),
+            ],
+        ], 'Users retrieved successfully');
     }
+
 
     // عرض مستخدم معين
     public function show(User $user)
@@ -41,6 +53,8 @@ class UserController extends BaseController
     // تحديث بيانات مستخدم
     public function update(UserRequest $request, User $user)
     {
+        dd($request->file('cv'), $request->all());
+
         // التفويض للـ Service لمعالجة العملية
         $updatedUser = $this->userService->update($user, $request->validated());
         return $this->sendSuccess(new UserResource($updatedUser), 'User updated successfully');

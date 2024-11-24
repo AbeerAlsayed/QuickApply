@@ -16,13 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('password');
             $table->string('email')->unique();
-            $table->string('facebook')->nullable();
-            $table->string('instagram')->nullable();
-            $table->string('linkedin')->nullable();
-            $table->string('phone_number')->nullable();
-            $table->string('address')->nullable();
-            $table->string('cv_path')->nullable();
-            $table->string('desired_position')->default('Not Specified'); // تعيين قيمة افتراضية
+            $table->string('cv')->nullable();
+            $table->string('position')->default('Not Specified'); // تعيين قيمة افتراضية
             $table->text('description')->nullable();
             $table->timestamp('email_verified_at')->nullable(); // إضافة عمود التحقق من البريد الإلكتروني
             $table->rememberToken(); // إضافة عمود remember_token
