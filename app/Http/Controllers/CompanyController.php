@@ -6,6 +6,7 @@ use App\Http\Requests\CompanyRequest;
 use App\Http\Resources\CompanyResource;
 use App\Models\Company;
 use App\Services\CompanyService;
+use Illuminate\Http\Request;
 
 class CompanyController extends BaseController
 {
@@ -48,5 +49,19 @@ class CompanyController extends BaseController
     {
         $this->companyService->delete($company);
         return $this->sendSuccess([], 'Company deleted successfully');
+    }
+
+    // دالة الفلتر
+    public function filter(Request $request)
+    {
+        // اجلب البريد الإلكتروني واسم البلد من الطلب
+        $email = $request->query('email');
+        $countryName = $request->query('country_name');
+
+        // فلترة الشركات باستخدام الـ Scope
+        $companies = Company::filterByEmailAndCountry($email, $countryName)->get();
+
+        // إعادة الرد بالنتائج
+        return response()->json($companies);
     }
 }

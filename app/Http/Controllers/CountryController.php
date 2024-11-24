@@ -6,6 +6,7 @@ use App\Http\Requests\CountryRequest;
 use App\Http\Resources\CountryResource;
 use App\Models\Country;
 use App\Services\CountryService;
+use Illuminate\Http\Request;
 
 class CountryController extends BaseController
 {
@@ -48,5 +49,18 @@ class CountryController extends BaseController
     {
         $this->countryService->delete($country);
         return $this->sendSuccess([], 'Country deleted successfully');
+    }
+
+    // دالة الفلتر
+    public function filter(Request $request)
+    {
+        // اجلب الكلمة التي سيتم البحث بها
+        $searchTerm = $request->query('search'); // هذا يكون إما الاسم أو الكود
+
+        // قم بالفلترة باستخدام الـ Scope
+        $countries = Country::filterByNameOrCode($searchTerm)->get();
+
+        // إعادة الرد بالنتائج
+        return response()->json($countries);
     }
 }

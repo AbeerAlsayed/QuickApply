@@ -16,7 +16,7 @@ return new class extends Migration
         $table->string('name')->unique(); // اسم الدولة
         $table->string('code', 5)->unique(); // كود الدولة
         $table->timestamps(); // تاريخ الإنشاء والتحديث
-    });
+          });
     }
 
     /**
