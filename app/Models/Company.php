@@ -23,6 +23,11 @@ class Company extends Model
         return $this->belongsTo(Country::class);
     }
 
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class);
+    }
+
     public function scopeFilterByEmailAndCountry($query, $email, $countryName)
     {
         return $query->when($email, function($query) use ($email) {

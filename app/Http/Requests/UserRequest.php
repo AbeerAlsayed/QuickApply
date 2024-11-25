@@ -13,10 +13,12 @@ class UserRequest extends FormRequest
 
     public function rules()
     {
+        $userId = $this->route('user')->id; // الحصول على ID المستخدم من الـ Route
+
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
+            'email' => 'required|email|unique:users,email,' . $userId, // استثناء البريد الإلكتروني الحالي
+            'password' => 'nullable|string|min:8', // اجعل كلمة المرور nullable أثناء التحديث
             'cv' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
             'position' => 'nullable|string',
             'description' => 'nullable|string',

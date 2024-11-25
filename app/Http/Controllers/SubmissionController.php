@@ -1,31 +1,38 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SubmissionRequest;
-use App\Http\Resources\SubmissionResource;
 use App\Services\SubmissionService;
+use Illuminate\Http\Request;
 
-class SubmissionController extends BaseController
+class SubmissionController extends Controller
 {
-    private $submissionService;
+    protected $submissionService;
 
     public function __construct(SubmissionService $submissionService)
     {
         $this->submissionService = $submissionService;
     }
 
-    public function store(SubmissionRequest $request)
+    public function notifyCompanies(Request $request)
     {
-        $data = $request->validated(); // الحصول على البيانات بعد التحقق
+        $validated = $request->validate([
+            'country_id' => 'required|exists:countries,id',
+            'cv' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'description' => 'nullable|string',
+            'position' => 'required|string',
+        ]);
 
-        // إنشاء الطلب باستخدام الخدمة
-        $submission = $this->submissionService->create($data);
+        $notifiedCompanies = $this->submissionService->notifyCompanies(
+            $validated['country_id'],
+            $request->file('cv'),
+            isset($validated['description']) ? $validated['description'] : null, // ديناميكي
+            $validated['position']
+        );
 
-        // إرسال الإيميل وتحديث حالة الطلب بعد الإرسال
-        $this->submissionService->sendEmailAndUpdateStatus($submission);
-
-        // إرجاع الاستجابة باستخدام الـ Resource
-        return $this->sendSuccess(new SubmissionResource($submission), 'Submission created and email sent successfully.');
+        return response()->json([
+            'status' => true,
+            'message' => 'Notifications and emails sent successfully.',
+            'data' => $notifiedCompanies,
+        ]);
     }
 }

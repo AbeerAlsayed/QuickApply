@@ -60,6 +60,11 @@ class User extends Authenticatable
             return $query->where('email', 'like', "%$email%");
         }
         return $query;
-
     }
+
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class);
+    }
+
 }

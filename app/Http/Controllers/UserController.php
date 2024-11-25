@@ -53,8 +53,6 @@ class UserController extends BaseController
     // تحديث بيانات مستخدم
     public function update(UserRequest $request, User $user)
     {
-        dd($request->file('cv'), $request->all());
-
         // التفويض للـ Service لمعالجة العملية
         $updatedUser = $this->userService->update($user, $request->validated());
         return $this->sendSuccess(new UserResource($updatedUser), 'User updated successfully');
@@ -77,7 +75,7 @@ class UserController extends BaseController
         $users = User::filterByEmail($email)->get();
 
         // أعد قائمة المستخدمين
-        return response()->json($users);
+        return  UserResource::collection($users);
 
     }
 }
