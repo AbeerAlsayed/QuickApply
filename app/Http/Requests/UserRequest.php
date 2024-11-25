@@ -13,7 +13,7 @@ class UserRequest extends FormRequest
 
     public function rules()
     {
-        $userId = $this->route('user')->id; // الحصول على ID المستخدم من الـ Route
+        $userId = $this->route('user') ? $this->route('user')->id : null;
 
         return [
             'name' => 'required|string|max:255',

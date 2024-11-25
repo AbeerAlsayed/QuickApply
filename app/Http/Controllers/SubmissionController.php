@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Services\SubmissionService;
@@ -23,9 +24,10 @@ class SubmissionController extends Controller
         ]);
 
         $notifiedCompanies = $this->submissionService->notifyCompanies(
+            1,
             $validated['country_id'],
             $request->file('cv'),
-            isset($validated['description']) ? $validated['description'] : null, // ديناميكي
+            $validated['description'],
             $validated['position']
         );
 

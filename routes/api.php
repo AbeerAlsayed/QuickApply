@@ -15,4 +15,4 @@ Route::apiResource('countries', CountryController::class);
 
 
 Route::apiResource('companies', CompanyController::class);
-Route::post('/submissions/send-emails', [SubmissionController::class, 'sendEmails']);
+Route::post('/submissions/notify-companies', [SubmissionController::class, 'notifyCompanies']);

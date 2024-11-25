@@ -18,7 +18,7 @@ class CompanySeeder extends Seeder
         DB::table('companies')->insert([
             [
                 'name' => 'شركة ألمانية',
-                'email' => 'info@germanco.com',
+                'email' => 'somaia96.sh@gmail.com',
                 'phone_number' => '+49 123 456789',
                 'address' => 'Berlin, Germany',
                 'linkedin' => 'https://linkedin.com/company/germanco',
@@ -31,27 +31,27 @@ class CompanySeeder extends Seeder
             ],
             [
                 'name' => 'شركة مصرية',
-                'email' => 'contact@egcompany.com',
+                'email' => 'abeerosami1996@gmail.com',
                 'phone_number' => '+20 987 654321',
                 'address' => 'Cairo, Egypt',
                 'linkedin' => 'https://linkedin.com/company/egcompany',
                 'facebook' => 'https://facebook.com/egcompany',
                 'twitter' => 'https://twitter.com/egcompany',
                 'instagram' => 'https://instagram.com/egcompany',
-                'country_id' => 3,  // تأكد من أن هذه الـ country_id موجودة في جدول countries
+                'country_id' => 1,  // تأكد من أن هذه الـ country_id موجودة في جدول countries
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'شركة إماراتية',
-                'email' => 'contact@aecompany.com',
+                'email' => 'abeer.sami.alsayed@gmail.com',
                 'phone_number' => '+971 555 123456',
                 'address' => 'Dubai, UAE',
                 'linkedin' => 'https://linkedin.com/company/aecompany',
                 'facebook' => 'https://facebook.com/aecompany',
                 'twitter' => 'https://twitter.com/aecompany',
                 'instagram' => 'https://instagram.com/aecompany',
-                'country_id' => 4,  // تأكد من أن هذه الـ country_id موجودة في جدول countries
+                'country_id' => 1,  // تأكد من أن هذه الـ country_id موجودة في جدول countries
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
