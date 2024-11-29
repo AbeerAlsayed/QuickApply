@@ -7,7 +7,8 @@ use App\Models\Company;
 use App\Models\User;
 use App\Notifications\JobSubmissionNotification;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Log;
 
 class SubmissionService
 {
@@ -33,8 +34,20 @@ class SubmissionService
                 // إنشاء وصف ديناميكي إذا لم يتم تقديمه
                 $finalDescription = isset($description) ? $description : "Dear {$company->name}, I am interested in the {$position} role and would like to apply.";
 
+                // تسجيل وقت البدء
+                $start = microtime(true);
+
                 // إرسال الإشعار عبر البريد الإلكتروني
-                $company->notify(new JobSubmissionNotification($finalDescription, $position, $cvPath, $user->email));
+                Notification::send($company, new JobSubmissionNotification($finalDescription, $position, $cvPath, $user->email));
+
+                // تسجيل وقت الانتهاء
+                $end = microtime(true);
+
+                // حساب الزمن المستغرق
+                $timeTaken = $end - $start;
+
+                // تسجيل الزمن في الـ Logs
+                Log::info("Email sent to {$company->email} in {$timeTaken} seconds.");
 
                 // إنشاء سجل في جدول الطلبات
                 Submission::create([
@@ -46,7 +59,10 @@ class SubmissionService
                     'is_sent' => true,
                 ]);
 
-                $notifiedCompanies[] = $company->email;
+                $notifiedCompanies[] = [
+                    'email' => $company->email,
+                    'time_taken' => $timeTaken,
+                ];
             }
 
             return $notifiedCompanies;
