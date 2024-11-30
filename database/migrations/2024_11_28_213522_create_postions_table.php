@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('positions', function (Blueprint $table) {
             $table->id();
             $table->string('title'); // عنوان البوسشن
-            $table->text('description'); // وصف البوسشن
+            $table->text('description')->nullable(); // وصف البوسشن
             $table->foreignId('company_id')->constrained('companies')->onDelete('cascade'); // الربط مع جدول الشركات
             $table->timestamps();
         });
+
     }
 
     /**

@@ -9,7 +9,7 @@ class CompanyResource extends JsonResource
 {
     public function toArray($request): array
     {
-        return array_filter([
+        return [
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
@@ -19,9 +19,18 @@ class CompanyResource extends JsonResource
             'facebook' => $this->facebook,
             'twitter' => $this->twitter,
             'instagram' => $this->instagram,
-            'country' => new CountryResource($this->whenLoaded('country')),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ]);
+            'country_id' => $this->country ? $this->country->id : null,
+            'country_name' => $this->country ? $this->country->name : null,
+
+            // Returning positions with id and title, using map
+            'positions' => $this->whenLoaded('positions', function () {
+                return $this->positions->map(function ($position) {
+                    return [
+                        'id' => $position->id,
+                        'title' => $position->title,
+                    ];
+                });
+            }),
+        ];
     }
 }

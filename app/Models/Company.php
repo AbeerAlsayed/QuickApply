@@ -44,4 +44,8 @@ class Company extends Model
             });
     }
 
+    public function positions()
+    {
+        return $this->hasMany(Position::class);
+    }
 }

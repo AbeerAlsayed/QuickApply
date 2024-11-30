@@ -22,7 +22,7 @@ class CompanyController extends BaseController
     // List all companies
     public function index()
     {
-        $companies = Company::with('country')->get();
+        $companies = Company::with('positions', 'country')->get();
         return $this->sendSuccess(CompanyResource::collection($companies), 'Companies retrieved successfully');
     }
 
