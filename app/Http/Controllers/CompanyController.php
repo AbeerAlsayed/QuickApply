@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CompanyExport;
 use App\Http\Requests\CompanyRequest;
 use App\Http\Resources\CompanyResource;
 use App\Models\Company;
 use App\Services\CompanyService;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CompanyController extends BaseController
 {
@@ -52,16 +54,25 @@ class CompanyController extends BaseController
     }
 
     // دالة الفلتر
-    public function filter(Request $request)
+//    public function filter(Request $request)
+//    {
+//        // اجلب البريد الإلكتروني واسم البلد من الطلب
+//        $email = $request->query('email');
+//        $countryName = $request->query('country_name');
+//
+//        // فلترة الشركات باستخدام الـ Scope
+//        $companies = Company::filterByEmailAndCountry($email, $countryName)->get();
+//
+//        // إعادة الرد بالنتائج
+//        return response()->json($companies);
+//    }
+    public function exportCompanies(Request $request)
     {
-        // اجلب البريد الإلكتروني واسم البلد من الطلب
-        $email = $request->query('email');
-        $countryName = $request->query('country_name');
+        $filters = [
+            'country_id' => $request->input('country_id'), // فلتر الدولة
+            'position' => $request->input('position'),
+        ];
 
-        // فلترة الشركات باستخدام الـ Scope
-        $companies = Company::filterByEmailAndCountry($email, $countryName)->get();
-
-        // إعادة الرد بالنتائج
-        return response()->json($companies);
+        return Excel::download(new CompanyExport($filters), 'filtered_companies.xlsx');
     }
 }

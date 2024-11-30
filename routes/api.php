@@ -16,3 +16,4 @@ Route::apiResource('countries', CountryController::class);
 
 Route::apiResource('companies', CompanyController::class);
 Route::post('/submissions/notify-companies', [SubmissionController::class, 'notifyCompanies']);
+Route::get('/export-company', [CompanyController::class, 'exportCompanies']);

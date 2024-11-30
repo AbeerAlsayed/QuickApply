@@ -16,13 +16,14 @@ class CountrySeeder extends Seeder
     {
         // إدخال بيانات الدول
         DB::table('countries')->insert([
-            ['name' => 'ألمانيا', 'code' => 'DE'],
-            ['name' => 'سوريا', 'code' => 'SY'],
-            ['name' => 'مصر', 'code' => 'EG'],
-            ['name' => 'الإمارات', 'code' => 'AE'],
-            ['name' => 'السعودية', 'code' => 'SA'],
-            ['name' => 'تركيا', 'code' => 'TR'],
-            ['name' => 'الأردن', 'code' => 'JO'],
+            ['name' => 'Germany', 'code' => 'DE'],
+            ['name' => 'Syria', 'code' => 'SY'],
+            ['name' => 'Egypt', 'code' => 'EG'],
+            ['name' => 'United Arab Emirates', 'code' => 'AE'],
+            ['name' => 'Saudi Arabia', 'code' => 'SA'],
+            ['name' => 'Turkey', 'code' => 'TR'],
+            ['name' => 'Jordan', 'code' => 'JO'],
         ]);
+
     }
 }
