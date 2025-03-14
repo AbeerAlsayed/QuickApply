@@ -18,21 +18,20 @@ class UserService
     public function create(array $data)
     {
         return DB::transaction(function () use ($data) {
-            // تشفير كلمة المرور
             if (isset($data['password'])) {
                 $data['password'] = Hash::make($data['password']);
             } else {
                 throw new \Exception('Password is required.');
             }
 
-            // معالجة السيرة الذاتية إذا كانت موجودة
             if (isset($data['cv']) && $data['cv']->isValid()) {
                 $data['cv'] = $data['cv']->store('cvs', 'public');
             }
 
-            // إذا لم يكن هناك رسالة، نقوم بتوليد واحدة باستخدام OpenRouter API
+            // معالجة توليد الرسالة
             if (empty($data['message'])) {
-                $data['message'] = $this->generateAIMessage($data);
+                $messageData = $this->generateAIMessage($data);
+                $data['message'] = $messageData['body']; // تخزين نص الرسالة فقط
             }
 
             // إنشاء المستخدم في قاعدة البيانات
@@ -40,26 +39,40 @@ class UserService
         });
     }
 
-    private function generateAIMessage(array $data): string
+    private function generateAIMessage(array $data): array
     {
         $apiKey = env('OPENROUTER_API_KEY');
         if (empty($apiKey)) {
             Log::error("OpenRouter API Key is missing.");
-            return "API Key is missing.";
+            return [
+                'subject' => "Job Application",
+                'body' => "API Key is missing.",
+            ];
         }
 
-        // تأكد من أن 'skills' هي مصفوفة وإذا كانت سلسلة نصية، حولها إلى مصفوفة
-        $skills = is_array($data['skills']) ? $data['skills'] : explode(',', $data['skills']);
+        $skills = is_array($data['skills']) ? implode(', ', $data['skills']) : $data['skills'];
 
-        $prompt = "Generate a professional job application message for the following user:\n" .
-            "Name: {$data['name']}\n" .
-            "Education: {$data['education']}\n" .
-            "Experience: {$data['experience']}\n" .
-            "Skills: " . implode(', ', $skills) . "\n" .
-            "Position: {$data['position']}\n";
+        $prompt = "Generate a well-structured job application email in JSON format.
+    The output **must be valid JSON** with two keys:
+    - 'subject': A short, clear subject for the email.
+    - 'body': A full, professional email content.
+
+    Candidate Details:
+    - Name: {$data['name']}
+    - Education: {$data['education']}
+    - Experience: {$data['experience']}
+    - Skills: {$skills}
+    - Position: {$data['position']}
+
+    **Output Example (strict JSON format):**
+    ```json
+    {
+        \"subject\": \"Application for Laravel Developer Position\",
+        \"body\": \"Dear Hiring Manager, ... Regards, John Doe\"
+    }
+    ```";
 
         try {
-            // زيادة المهلة إلى 30 ثانية
             $response = Http::timeout(30)->withHeaders([
                 'Authorization' => 'Bearer ' . $apiKey,
                 'Content-Type'  => 'application/json',
@@ -68,26 +81,54 @@ class UserService
                 'messages' => [['role' => 'user', 'content' => $prompt]],
             ]);
 
-            Log::debug("OpenRouter Response: " . $response->body()); // طباعة الاستجابة لتتبع الأخطاء
+            Log::debug("OpenRouter Response: " . $response->body());
 
             if ($response->failed()) {
                 Log::error("Error connecting to OpenRouter API: " . $response->body());
-                return "Error connecting to OpenRouter API.";
+                return [
+                    'subject' => "Job Application",
+                    'body' => "Error connecting to OpenRouter API.",
+                ];
             }
 
             $result = $response->json();
 
-            // تحقق مما إذا كان الرد يحتوي على البيانات المتوقعة
             if (!isset($result['choices'][0]['message']['content'])) {
-                Log::error("Unexpected API response structure: " . json_encode($result));
-                return "Unexpected API response.";
+                Log::error("Unexpected API response: " . json_encode($result));
+                return [
+                    'subject' => "Job Application",
+                    'body' => "Unexpected API response.",
+                ];
             }
 
-            return $result['choices'][0]['message']['content'];
+            // 🔹 استخراج النص الذي يتوقع أن يكون JSON
+            $content = trim($result['choices'][0]['message']['content']);
+
+            // 🔹 إزالة أي نصوص غير JSON من البداية أو النهاية
+            $content = preg_replace('/.*?({.*}).*/s', '$1', $content);
+
+            // 🔹 تحويل النص إلى JSON
+            $json = json_decode($content, true);
+
+            if (!isset($json['subject']) || !isset($json['body'])) {
+                Log::error("Invalid JSON structure from API: " . json_encode($json));
+                return [
+                    'subject' => "Job Application",
+                    'body' => "Invalid API response format.",
+                ];
+            }
+
+            return [
+                'subject' => $json['subject'],
+                'body' => $json['body'],
+            ];
 
         } catch (\Exception $e) {
             Log::error("Exception in OpenRouter API call: " . $e->getMessage());
-            return "An error occurred while generating the message.";
+            return [
+                'subject' => "Job Application",
+                'body' => "An error occurred while generating the message.",
+            ];
         }
     }
 

@@ -35,7 +35,6 @@ class SubmissionService
                 Log::info('CV Path: ' . storage_path("{$cvPath}"));
                 $start = microtime(true);
 
-                // إرسال الإشعار عبر البريد الإلكتروني
                 Notification::send($company, new JobSubmissionNotification($finalDescription, $position, $cvPath));
 
                 $end = microtime(true);
