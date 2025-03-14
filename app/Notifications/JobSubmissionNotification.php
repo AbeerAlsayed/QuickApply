@@ -7,18 +7,19 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Log;
 
 class JobSubmissionNotification extends Notification
 {
     use Queueable;
 
-    protected $description;
-    protected $position;
-    protected $cvPath;
+    protected string $message;
+    protected string $position;
+    protected string $cvPath;
 
-    public function __construct($description, $position, $cvPath)
+    public function __construct(string $message, string $position, string $cvPath)
     {
-        $this->description = $description;
+        $this->message = $message;
         $this->position = $position;
         $this->cvPath = $cvPath;
     }
@@ -30,10 +31,21 @@ class JobSubmissionNotification extends Notification
 
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-            ->subject("Job Application for {$this->position}")
-            ->line($this->description)
-            ->line('Please find the attached CV.')
-            ->attach(storage_path("app/public/{$this->cvPath}"));
+        $cvFullPath = public_path("storage/" . str_replace('\\', '/', $this->cvPath));
+
+        if (file_exists($cvFullPath)) {
+            return (new MailMessage)
+                ->subject("Job Application for {$this->position}")
+                ->line($this->message)
+                ->line("Please find the attached CV.")
+                ->attach($cvFullPath);
+        } else {
+            Log::error("CV file not found at: " . $cvFullPath);
+            return (new MailMessage)
+                ->subject("Job Application for {$this->position}")
+                ->line($this->message)
+                ->line("CV file is missing.");
+        }
+
     }
 }

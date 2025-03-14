@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\SubmissionController;
@@ -17,3 +18,12 @@ Route::apiResource('countries', CountryController::class);
 Route::apiResource('companies', CompanyController::class);
 Route::post('/submissions/notify-companies', [SubmissionController::class, 'notifyCompanies']);
 Route::get('/export-company', [CompanyController::class, 'exportCompanies']);
+
+
+
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', [AuthController::class, 'user']);
+});

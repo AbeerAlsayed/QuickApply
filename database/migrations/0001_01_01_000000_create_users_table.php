@@ -16,11 +16,14 @@ return new class extends Migration
             $table->string('name');
             $table->string('password');
             $table->string('email')->unique();
+            $table->string('education');
+            $table->string('experience');
+            $table->string('skills');
+            $table->string('position')->default('Not Specified');
             $table->string('cv')->nullable();
-            $table->string('position')->default('Not Specified'); // تعيين قيمة افتراضية
-            $table->text('description')->nullable();
-            $table->timestamp('email_verified_at')->nullable(); // إضافة عمود التحقق من البريد الإلكتروني
-            $table->rememberToken(); // إضافة عمود remember_token
+            $table->text('message')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
 

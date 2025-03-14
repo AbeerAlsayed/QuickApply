@@ -24,20 +24,17 @@ class CountryController extends BaseController
         return $this->sendSuccess(CountryResource::collection($countries), 'Countries retrieved successfully');
     }
 
-    // عرض دولة معينة
     public function show(Country $country)
     {
         return $this->sendSuccess(new CountryResource($country), 'Country retrieved successfully');
     }
 
-    // إنشاء دولة جديدة
     public function store(CountryRequest $request)
     {
         $country = $this->countryService->create($request->validated());
         return $this->sendSuccess(new CountryResource($country), 'Country created successfully');
     }
 
-    // تحديث بيانات دولة
     public function update(CountryRequest $request, Country $country)
     {
         $updatedCountry = $this->countryService->update($country, $request->validated());

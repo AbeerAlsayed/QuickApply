@@ -18,17 +18,11 @@ class SubmissionController extends Controller
     {
         $validated = $request->validate([
             'country_id' => 'required|exists:countries,id',
-            'cv' => 'required|file|mimes:pdf,doc,docx|max:2048',
-            'description' => 'nullable|string',
-            'position' => 'required|string',
         ]);
 
         $notifiedCompanies = $this->submissionService->notifyCompanies(
-            1,
-            $validated['country_id'],
-            $request->file('cv'),
-            $validated['description'],
-            $validated['position']
+            3,
+            $validated['country_id']
         );
 
         return response()->json([

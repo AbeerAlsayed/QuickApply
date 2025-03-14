@@ -10,18 +10,23 @@ use Illuminate\Http\Request;
 
 class UserController extends BaseController
 {
-    private $userService;
+    protected $userService;
 
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
     }
 
-    // عرض جميع المستخدمين
     public function index(Request $request)
     {
-        $perPage = $request->input('per_page', 10); // العدد الافتراضي 10 إذا لم يتم تمرير 'per_page'
-        $users = User::paginate($perPage);
+        $perPage = $request->input('per_page', 10);
+        $query = User::query();
+
+        if ($request->has('email')) {
+            $query->filterByEmail($request->input('email'));
+        }
+
+        $users = $query->paginate($perPage);
 
         return $this->sendSuccess([
             'data' => UserResource::collection($users),
@@ -35,8 +40,7 @@ class UserController extends BaseController
         ], 'Users retrieved successfully');
     }
 
-
-    // عرض مستخدم معين
+    // عرض بيانات مستخدم معين
     public function show(User $user)
     {
         return $this->sendSuccess(new UserResource($user), 'User retrieved successfully');
@@ -45,37 +49,29 @@ class UserController extends BaseController
     // إنشاء مستخدم جديد
     public function store(UserRequest $request)
     {
-        // التفويض للـ Service لمعالجة العملية
         $user = $this->userService->create($request->validated());
         return $this->sendSuccess(new UserResource($user), 'User created successfully');
     }
 
-    // تحديث بيانات مستخدم
+    // تحديث بيانات المستخدم مع التحقق من الصلاحيات
     public function update(UserRequest $request, User $user)
     {
-        // التفويض للـ Service لمعالجة العملية
+//        if (auth()->id() !== $user->id && !auth()->user()->isAdmin()) {
+//            return $this->sendError('Unauthorized', 403);
+//        }
+        $user=User::find($user->id);
         $updatedUser = $this->userService->update($user, $request->validated());
         return $this->sendSuccess(new UserResource($updatedUser), 'User updated successfully');
     }
 
-    // حذف مستخدم
+    // حذف مستخدم مع التحقق من الصلاحيات
     public function destroy(User $user)
     {
-        // التفويض للـ Service لمعالجة العملية
+        if (auth()->id() !== $user->id && !auth()->user()->isAdmin()) {
+            return $this->sendError('Unauthorized', 403);
+        }
+
         $this->userService->delete($user);
         return $this->sendSuccess([], 'User deleted successfully');
-    }
-
-    public function filter(Request $request)
-    {
-        // اجلب الإيميل من الطلب
-        $email = $request->query('email');
-
-        // فلتر المستخدمين باستخدام Scope
-        $users = User::filterByEmail($email)->get();
-
-        // أعد قائمة المستخدمين
-        return  UserResource::collection($users);
-
     }
 }

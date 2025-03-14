@@ -15,12 +15,6 @@ return new class extends Migration
             $table->id(); // رقم الشركة
             $table->string('name')->nullable(); // اسم الشركة
             $table->string('email')->nullable(); // بريد الشركة الإلكتروني
-            $table->string('phone_number')->nullable(); // رقم هاتف الشركة
-            $table->string('address')->nullable(); // عنوان الشركة
-            $table->string('linkedin')->nullable(); // رابط LinkedIn
-            $table->string('facebook')->nullable(); // رابط Facebook
-            $table->string('twitter')->nullable(); // رابط Twitter
-            $table->string('instagram')->nullable(); // رابط Instagram
             $table->foreignId('country_id')->constrained()->onDelete('cascade'); // الدولة التابعة لها
             $table->timestamps(); // تاريخ الإنشاء والتحديث
         });

@@ -12,14 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('submissions', function (Blueprint $table) {
-            $table->id(); // رقم الطلب
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // المستخدم الذي أرسل الطلب
-            $table->foreignId('company_id')->constrained()->onDelete('cascade'); // الشركة التي أُرسل إليها الطلب
-            $table->string('cv'); // رابط السيرة الذاتية
-            $table->text('description')->nullable(); // وصف الطلب
-            $table->string('position'); // نوع الوظيفة المطلوبة
-            $table->boolean('is_sent')->default(false); // حالة الإرسال
-            $table->timestamps(); // تاريخ الإنشاء والتحديث
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('company_id')->constrained()->onDelete('cascade');
+            $table->boolean('is_sent')->default(false);
+            $table->timestamps();
         });
 
 

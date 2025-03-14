@@ -21,34 +21,16 @@ class CompanySeeder extends Seeder
             [
                 'name' => 'شركة ألمانية',
                 'email' => 'somaia96.sh@gmail.com',
-                'phone_number' => '+49 123 456789',
-                'address' => 'Berlin, Germany',
-                'linkedin' => 'https://linkedin.com/company/germanco',
-                'facebook' => 'https://facebook.com/germanco',
-                'twitter' => 'https://twitter.com/germanco',
-                'instagram' => 'https://instagram.com/germanco',
                 'country_id' => 1,  // تأكد من أن هذه الـ country_id موجودة في جدول countries
             ],
             [
                 'name' => 'شركة مصرية',
                 'email' => 'abeerosami1996@gmail.com',
-                'phone_number' => '+20 987 654321',
-                'address' => 'Cairo, Egypt',
-                'linkedin' => 'https://linkedin.com/company/egcompany',
-                'facebook' => 'https://facebook.com/egcompany',
-                'twitter' => 'https://twitter.com/egcompany',
-                'instagram' => 'https://instagram.com/egcompany',
                 'country_id' => 1,
             ],
             [
                 'name' => 'شركة إماراتية',
                 'email' => 'abeer.sami.alsayed@gmail.com',
-                'phone_number' => '+971 555 123456',
-                'address' => 'Dubai, UAE',
-                'linkedin' => 'https://linkedin.com/company/aecompany',
-                'facebook' => 'https://facebook.com/aecompany',
-                'twitter' => 'https://twitter.com/aecompany',
-                'instagram' => 'https://instagram.com/aecompany',
                 'country_id' => 1,
             ],
         ];
@@ -71,7 +53,6 @@ class CompanySeeder extends Seeder
                 $positionsData[] = [
                     'company_id' => $companyId,
                     'title' => $positionTitle,
-                    'description' => null, // أو أي قيمة أخرى تحتاجها
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];

@@ -13,9 +13,6 @@ class Submission extends Model
     protected $fillable = [
         'user_id',
         'company_id',
-        'cv',
-        'description',
-        'position',
         'is_sent',
     ];
 
@@ -25,7 +22,6 @@ class Submission extends Model
         return $this->belongsTo(User::class);
     }
 
-    // العلاقة مع الشركة
     public function company()
     {
         return $this->belongsTo(Company::class);

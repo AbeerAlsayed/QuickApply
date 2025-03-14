@@ -12,9 +12,13 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'cv_path' => $this->cv ? url('storage/' . $this->cv) : null,
+            'education' => $this->education,
+            'experience' => $this->experience,
+            'skills' => explode(',', $this->skills), // تحويل المهارات إلى مصفوفة
             'position' => $this->position,
-            'description' => $this->description,
+            'cv_path' => $this->cv ? url('storage/' . $this->cv) : null,
+            'message' => $this->message,
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'), // تنسيق التاريخ
         ];
     }
 }

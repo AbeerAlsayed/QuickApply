@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('countries', function (Blueprint $table) {
         $table->id(); // رقم الدولة
         $table->string('name')->unique(); // اسم الدولة
-        $table->string('code', 5)->unique(); // كود الدولة
         $table->timestamps(); // تاريخ الإنشاء والتحديث
           });
     }
