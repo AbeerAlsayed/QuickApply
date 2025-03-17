@@ -74,4 +74,33 @@ class UserController extends BaseController
         $this->userService->delete($user);
         return $this->sendSuccess([], 'User deleted successfully');
     }
+
+    public function getUserCompaniesWithPositions($userId)
+    {
+        $user = User::find($userId);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $companies = $user->companies()->with('positions')->get();
+
+        $results = $companies->map(function ($company) {
+            return [
+                'company_id' => $company->id,
+                'company_name' => $company->name,
+                'company_email' => $company->email,
+                'positions' => $company->positions->map(function ($position) {
+                    return [
+                        'position_id' => $position->id,
+                        'position_title' => $position->title,
+                    ];
+                }),
+                'is_sent' => $company->pivot->is_sent,
+            ];
+        });
+
+        return response()->json($results);
+    }
+
 }

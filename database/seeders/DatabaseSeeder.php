@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CountrySeeder::class,
             CompanySeeder::class,
-            PositionsTableSeeder::class
+            PositionSeeder::class,
+            CompanyUserSeeder::class,
         ]);
     }
 }

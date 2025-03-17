@@ -14,11 +14,11 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'education' => $this->education,
             'experience' => $this->experience,
-            'skills' => explode(',', $this->skills), // تحويل المهارات إلى مصفوفة
+            'skills' => explode(',', $this->skills),
             'position' => $this->position,
             'cv_path' => $this->cv ? url('storage/' . $this->cv) : null,
             'message' => $this->message,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'), // تنسيق التاريخ
+            'created_at' => $this->created_at,
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Country;
 use Illuminate\Support\Facades\DB;
 
@@ -22,7 +23,8 @@ class CountryService
         });
     }
 
-    public function delete(Country $country): bool
+
+    public function delete(Country $country)
     {
         return DB::transaction(function () use ($country) {
             return $country->delete();

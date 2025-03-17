@@ -32,7 +32,9 @@ class SubmissionService
                 $cvPath = $user->cv;
                 $position = $user->position;
                 $email = $user->email;
-                Log::info('CV Path: ' . storage_path("{$cvPath}"));
+                $cvFullPath = public_path("storage/" . str_replace('\\', '/', $cvPath));
+
+                Log::info('CV Path: ' . public_path("{$cvFullPath}"));
                 $start = microtime(true);
 
                 Notification::send($company, new JobSubmissionNotification($finalDescription, $position, $cvPath));

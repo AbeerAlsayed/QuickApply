@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,16 +15,14 @@ class CountrySeeder extends Seeder
      */
     public function run()
     {
-        // إدخال بيانات الدول
-        DB::table('countries')->insert([
-            ['name' => 'Germany'],
-            ['name' => 'Syria'],
-            ['name' => 'Egypt'],
-            ['name' => 'United Arab Emirates'],
-            ['name' => 'Saudi Arabia'],
-            ['name' => 'Turkey'],
-            ['name' => 'Jordan'],
-        ]);
+        $countries = ['Syria', 'Egypt', 'Dubai', 'Germany', 'Saudi Arabia'];
 
+        foreach ($countries as $country) {
+            DB::table('countries')->insert([
+                'name' => $country,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class SubmissionRequest extends FormRequest
 {
+
     public function rules(): array
     {
         return [

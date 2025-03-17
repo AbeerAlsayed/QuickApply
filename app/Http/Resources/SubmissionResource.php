@@ -11,11 +11,11 @@ class SubmissionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
-            'company_id' => $this->company_id,
-            'email' => $this->email,
-            'description' => $this->description,
+            'company_name' => $this->company->name,
+            'email' => $this->user->email,
+            'position' => $this->user->position,
             'is_sent' => $this->is_sent,
+            'country' => $this->company->country->name,
         ];
     }
 }
