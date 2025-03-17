@@ -10,12 +10,14 @@ class SubmissionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'company_name' => $this->company->name,
-            'email' => $this->user->email,
-            'position' => $this->user->position,
-            'is_sent' => $this->is_sent,
-            'country' => $this->company->country->name,
+            'company_id' => $this->id,
+            'company_name' => $this->name,
+            'company_email' => $this->email,
+            'positions' => $this->positions->map(fn($position) => [
+                'position_id' => $position->id,
+                'position_title' => $position->title,
+            ]),
+            'is_sent' => $this->users->first()->is_sent ?? false,
         ];
     }
 }

@@ -40,20 +40,17 @@ class UserController extends BaseController
         ], 'Users retrieved successfully');
     }
 
-    // عرض بيانات مستخدم معين
     public function show(User $user)
     {
         return $this->sendSuccess(new UserResource($user), 'User retrieved successfully');
     }
 
-    // إنشاء مستخدم جديد
     public function store(UserRequest $request)
     {
         $user = $this->userService->create($request->validated());
         return $this->sendSuccess(new UserResource($user), 'User created successfully');
     }
 
-    // تحديث بيانات المستخدم مع التحقق من الصلاحيات
     public function update(UserRequest $request, User $user)
     {
 //        if (auth()->id() !== $user->id && !auth()->user()->isAdmin()) {
@@ -64,7 +61,6 @@ class UserController extends BaseController
         return $this->sendSuccess(new UserResource($updatedUser), 'User updated successfully');
     }
 
-    // حذف مستخدم مع التحقق من الصلاحيات
     public function destroy(User $user)
     {
         if (auth()->id() !== $user->id && !auth()->user()->isAdmin()) {
@@ -73,34 +69,6 @@ class UserController extends BaseController
 
         $this->userService->delete($user);
         return $this->sendSuccess([], 'User deleted successfully');
-    }
-
-    public function getUserCompaniesWithPositions($userId)
-    {
-        $user = User::find($userId);
-
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        $companies = $user->companies()->with('positions')->get();
-
-        $results = $companies->map(function ($company) {
-            return [
-                'company_id' => $company->id,
-                'company_name' => $company->name,
-                'company_email' => $company->email,
-                'positions' => $company->positions->map(function ($position) {
-                    return [
-                        'position_id' => $position->id,
-                        'position_title' => $position->title,
-                    ];
-                }),
-                'is_sent' => $company->pivot->is_sent,
-            ];
-        });
-
-        return response()->json($results);
     }
 
 }

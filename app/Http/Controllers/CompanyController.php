@@ -40,7 +40,6 @@ class CompanyController extends BaseController
         return $this->sendSuccess(new CompanyResource($updatedCompany), 'Company updated successfully');
     }
 
-    // Delete a company
     public function destroy(Company $company)
     {
         $this->companyService->delete($company);
@@ -50,53 +49,12 @@ class CompanyController extends BaseController
     public function exportCompanies(Request $request)
     {
         $filters = [
-            'country_id' => $request->input('country_id'), // فلتر الدولة
+            'country_id' => $request->input('country_id'),
             'position' => $request->input('position'),
         ];
 
         return Excel::download(new CompanyExport($filters), 'filtered_companies.xlsx');
     }
 
-    public function getCompaniesByCountry($countryId, $userId)
-    {
-        // البحث عن البلد
-        $country = Country::find($countryId);
-
-        if (!$country) {
-            return response()->json(['message' => 'Country not found'], 404);
-        }
-
-        // البحث عن المستخدم
-        $user = User::find($userId);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        // جلب الشركات المرتبطة بالبلد مع المناصب
-        $companies = $country->companies()->with('positions')->get();
-
-        // تنسيق النتائج لكل شركة بناءً على حالة is_sent الخاصة بالمستخدم
-        $results = $companies->map(function ($company) use ($user) {
-            // التحقق مما إذا كان المستخدم قد أرسل إلى هذه الشركة أم لا
-            $isSent = $company->users()
-                ->where('user_id', $user->id)
-                ->exists() ? $company->users()->where('user_id', $user->id)->first()->pivot->is_sent : false;
-
-            return [
-                'company_id' => $company->id,
-                'company_name' => $company->name,
-                'company_email' => $company->email,
-                'positions' => $company->positions->map(function ($position) {
-                    return [
-                        'position_id' => $position->id,
-                        'position_title' => $position->title,
-                    ];
-                }),
-                'is_sent' => $isSent,
-            ];
-        });
-
-        return response()->json($results);
-    }
 
 }
