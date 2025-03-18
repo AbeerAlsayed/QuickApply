@@ -31,21 +31,27 @@ class JobSubmissionNotification extends Notification
 
     public function toMail($notifiable)
     {
-        $cvRelativePath = "public/" . str_replace('\\', '/', $this->cvPath);
-        Log::info("CV Path: " . $cvRelativePath);
+        $cvPath = 'cvs/' . basename($this->cvPath);
+        $cvStoragePath = storage_path("app/public/{$cvPath}");
 
-        if (\Storage::exists($cvRelativePath)) {
+        Log::info("Checking CV at: " . $cvStoragePath);
+
+        if (file_exists($cvStoragePath)) {
             return (new MailMessage)
                 ->subject("Job Application for {$this->position}")
                 ->line($this->message)
-                ->line("Please find the attached CV.")
-                ->attachFromStorage($cvRelativePath);
+                ->attach($cvStoragePath, [
+                    'as' => 'CV.pdf',
+                    'mime' => 'application/pdf'
+                ]);
         } else {
-            Log::error("CV file not found at: " . storage_path("app/" . $cvRelativePath));
+            Log::error("CV file not found at: " . $cvStoragePath);
             return (new MailMessage)
                 ->subject("Job Application for {$this->position}")
                 ->line($this->message)
                 ->line("CV file is missing.");
         }
     }
+
+
 }
