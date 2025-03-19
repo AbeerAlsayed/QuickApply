@@ -19,7 +19,7 @@ class CompanyUserSeeder extends Seeder
                 DB::table('submissions')->insert([
                     'user_id' => $user->id,
                     'company_id' => $company->id,
-                    'is_sent' => 0,
+                    'is_sent' => false,
                 ]);
             }
         }
