@@ -24,11 +24,11 @@ class UserService
                 throw new \Exception('Password is required.');
             }
 
-            if (isset($data['cv'])) {
-                $cv = is_array($data['cv']) ? $data['cv'][0] : $data['cv'];
-
-                if ($cv->isValid()) {
-                    $data['cv'] = $cv->store('cvs', 'public');
+            if (isset($data['cv']) && $data['cv'] instanceof \Illuminate\Http\UploadedFile) {
+                if ($data['cv']->isValid()) {
+                    $data['cv'] = $data['cv']->store('cvs', 'public');
+                } else {
+                    throw new \Exception('Invalid CV file.');
                 }
             }
 
