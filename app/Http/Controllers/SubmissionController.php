@@ -37,21 +37,41 @@ class SubmissionController extends BaseController
         }
     }
 
-    public function getCompaniesByCountry($countryId)
+    public function getCompaniesByCountry(Request $request)
     {
-        $country = Country::find($countryId);
+        if (!auth()->check()) {
+            return $this->sendError('Unauthorized. Please log in.', [], 401);
+        }
+
+        $countryName = $request->input('country_name');
+
+        if (!$countryName) {
+            return $this->sendError('Country name is required.', [], 400);
+        }
+
+        $country = Country::where('name', $countryName)->first();
 
         if (!$country) {
             return $this->sendError('Country not found', [], 404);
         }
-        if (!auth()->check()) {
-            return $this->sendError('Unauthorized. Please log in.', [], 401);
+
+        $user = auth()->user();
+        $position = $user->position;
+
+        if (!$position || $position === 'Not Specified') {
+            return $this->sendError('User position is not specified.', [], 400);
         }
-        $userId = auth()->id();
+
         $companies = $country->companies()
-            ->with(['positions', 'users' => function ($query) use ($userId) {
-                $query->where('user_id', $userId)->select('company_id', 'is_sent');
-            }])
+            ->whereHas('positions', function ($query) use ($position) {
+                $query->where('title', $position);
+            })
+            ->with([
+                'positions',
+                'users' => function ($query) use ($user) {
+                    $query->where('user_id', $user->id)->select('company_id', 'is_sent');
+                }
+            ])
             ->get();
 
         return $this->sendSuccess(SubmissionResource::collection($companies), 'Companies retrieved successfully');
