@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\TimestampsFormat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,7 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, TimestampsFormat;
 
     /**
      * The attributes that are mass assignable.
@@ -55,9 +56,6 @@ class User extends Authenticatable
     }
 
 
-    /**
-     * Scope a query to filter users by email.
-     */
     public function scopeFilterByEmail($query, $email)
     {
         if ($email) {
@@ -66,9 +64,9 @@ class User extends Authenticatable
         return $query;
     }
 
-    public function submissions()
+    public function companies()
     {
-        return $this->hasMany(Submission::class);
+        return $this->belongsToMany(Company::class, 'submissions')->withPivot('is_sent');
     }
     public function tests()
     {

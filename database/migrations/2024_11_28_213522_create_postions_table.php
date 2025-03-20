@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('positions', function (Blueprint $table) {
             $table->id();
-            $table->string('title'); // عنوان البوسشن
-            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade'); // الربط مع جدول الشركات
+            $table->string('title');
+            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
             $table->timestamps();
         });
 

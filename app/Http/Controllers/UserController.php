@@ -40,20 +40,17 @@ class UserController extends BaseController
         ], 'Users retrieved successfully');
     }
 
-    // عرض بيانات مستخدم معين
     public function show(User $user)
     {
         return $this->sendSuccess(new UserResource($user), 'User retrieved successfully');
     }
 
-    // إنشاء مستخدم جديد
     public function store(UserRequest $request)
     {
         $user = $this->userService->create($request->validated());
         return $this->sendSuccess(new UserResource($user), 'User created successfully');
     }
 
-    // تحديث بيانات المستخدم مع التحقق من الصلاحيات
     public function update(UserRequest $request, User $user)
     {
 //        if (auth()->id() !== $user->id && !auth()->user()->isAdmin()) {
@@ -64,7 +61,6 @@ class UserController extends BaseController
         return $this->sendSuccess(new UserResource($updatedUser), 'User updated successfully');
     }
 
-    // حذف مستخدم مع التحقق من الصلاحيات
     public function destroy(User $user)
     {
         if (auth()->id() !== $user->id && !auth()->user()->isAdmin()) {
@@ -74,4 +70,5 @@ class UserController extends BaseController
         $this->userService->delete($user);
         return $this->sendSuccess([], 'User deleted successfully');
     }
+
 }

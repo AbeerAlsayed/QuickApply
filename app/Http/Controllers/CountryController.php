@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ModelNotFoundException;
 use App\Http\Requests\CountryRequest;
 use App\Http\Resources\CountryResource;
 use App\Models\Country;
@@ -17,16 +18,10 @@ class CountryController extends BaseController
         $this->countryService = $countryService;
     }
 
-    // عرض جميع الدول
     public function index()
     {
         $countries = Country::all();
         return $this->sendSuccess(CountryResource::collection($countries), 'Countries retrieved successfully');
-    }
-
-    public function show(Country $country)
-    {
-        return $this->sendSuccess(new CountryResource($country), 'Country retrieved successfully');
     }
 
     public function store(CountryRequest $request)
@@ -41,23 +36,22 @@ class CountryController extends BaseController
         return $this->sendSuccess(new CountryResource($updatedCountry), 'Country updated successfully');
     }
 
-    // حذف دولة
-    public function destroy(Country $country)
+    public function destroy($id)
     {
-        $this->countryService->delete($country);
-        return $this->sendSuccess([], 'Country deleted successfully');
-    }
+        try {
+            $country = Country::find($id);
 
-    // دالة الفلتر
-    public function filter(Request $request)
-    {
-        // اجلب الكلمة التي سيتم البحث بها
-        $searchTerm = $request->query('search'); // هذا يكون إما الاسم أو الكود
+            if (!$country) {
+                throw new \App\Exceptions\ModelNotFoundException('Country', 'ID not found');
+            }
 
-        // قم بالفلترة باستخدام الـ Scope
-        $countries = Country::filterByNameOrCode($searchTerm)->get();
+            $this->countryService->delete($country);
 
-        // إعادة الرد بالنتائج
-        return response()->json($countries);
+            return $this->sendSuccess([], 'Country deleted successfully');
+        } catch (\App\Exceptions\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 404);
+        }
     }
 }

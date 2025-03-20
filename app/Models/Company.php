@@ -2,23 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\TimestampsFormat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
 class Company extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, TimestampsFormat;
 
     protected $fillable = [
         'name',
         'email',
-        'phone_number',
-        'address',
-        'linkedin',
-        'facebook',
-        'twitter',
-        'instagram',
         'country_id'
     ];
 
@@ -27,9 +22,9 @@ class Company extends Model
         return $this->belongsTo(Country::class);
     }
 
-    public function submissions()
+    public function users()
     {
-        return $this->hasMany(Submission::class);
+        return $this->belongsToMany(User::class,'submissions')->withPivot('is_sent');
     }
 
     public function scopeFilterByEmailAndCountry($query, $email, $countryName)

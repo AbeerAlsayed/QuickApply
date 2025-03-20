@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('companies', function (Blueprint $table) {
-            $table->id(); // رقم الشركة
-            $table->string('name')->nullable(); // اسم الشركة
-            $table->string('email')->nullable(); // بريد الشركة الإلكتروني
-            $table->foreignId('country_id')->constrained()->onDelete('cascade'); // الدولة التابعة لها
-            $table->timestamps(); // تاريخ الإنشاء والتحديث
+            $table->id();
+            $table->string('name')->nullable();
+            $table->string('email')->nullable();
+            $table->foreignId('country_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

@@ -2,22 +2,20 @@
 
 namespace App\Models;
 
+use App\Traits\TimestampsFormat;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
 class Country extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, TimestampsFormat;
     protected $fillable = ['name', 'code'];
 
     public function companies(){
         return $this->hasMany(Company::class);
     }
-    // تعريف الـ scope
-    public function scopeFilterByNameOrCode($query, $searchTerm)
-    {
-        return $query->where('name', 'like', "%$searchTerm%")
-            ->orWhere('code', 'like', "%$searchTerm%");
-    }
+
+
 }

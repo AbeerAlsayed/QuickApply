@@ -9,57 +9,19 @@ use Illuminate\Support\Facades\DB;
 
 class CompanySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
-        // إدخال بيانات الشركات
-        $companies = [
-            [
-                'name' => 'شركة ألمانية',
-                'email' => 'somaia96.sh@gmail.com',
-                'country_id' => 1,  // تأكد من أن هذه الـ country_id موجودة في جدول countries
-            ],
-            [
-                'name' => 'شركة مصرية',
-                'email' => 'abeerosami1996@gmail.com',
-                'country_id' => 1,
-            ],
-            [
-                'name' => 'شركة إماراتية',
-                'email' => 'abeer.sami.alsayed@gmail.com',
-                'country_id' => 1,
-            ],
-        ];
+        $countries = DB::table('countries')->pluck('id', 'name');
 
-        // إدخال الشركات في قاعدة البيانات
-        foreach ($companies as $company) {
-            $companyId = DB::table('companies')->insertGetId($company);
-
-            // إدخال الوظائف المتعلقة بالشركة
-            $positions = [
-                'Laravel Developer',
-                'React Developer',
-                'UI/UX Designer',
-                'Graphic Designer',
-            ];
-
-            $positionsData = [];
-
-            foreach ($positions as $positionTitle) {
-                $positionsData[] = [
-                    'company_id' => $companyId,
-                    'title' => $positionTitle,
+        foreach ($countries as $countryName => $countryId) {
+            for ($i = 1; $i <= 3; $i++) {
+                DB::table('companies')->insert([
+                    'name' => "$countryName Company $i",
+                    'email' => "company$i@example.com",
+                    'country_id' => $countryId,
                     'created_at' => now(),
-                    'updated_at' => now(),
-                ];
+                ]);
             }
-
-            // استخدام insertOrIgnore لإدخال البيانات بدون تكرار
-            DB::table('positions')->insertOrIgnore($positionsData);
         }
     }
 }
