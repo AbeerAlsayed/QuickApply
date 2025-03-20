@@ -24,23 +24,45 @@ class UserService
                 throw new \Exception('Password is required.');
             }
 
+            // التعامل مع السيرة الذاتية إذا كانت موجودة
             if (isset($data['cv']) && $data['cv'] instanceof \Illuminate\Http\UploadedFile) {
-                if ($data['cv']->isValid()) {
-                    $path = $data['cv']->store('cvs', 'public');
-                    $data['cv'] = $path;
+                try {
+                    // التحقق من نوع الملف (مثال: PDF, DOCX, DOC)
+                    $allowedMimeTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                    $cvMimeType = $data['cv']->getMimeType();
 
-                    Log::info('CV file stored at: ' . $path);
-                } else {
-                    throw new \Exception('Invalid CV file.');
+                    if (!in_array($cvMimeType, $allowedMimeTypes)) {
+                        throw new \Exception("Invalid file type. Allowed types: PDF, DOC, DOCX.");
+                    }
+
+                    // التحقق من حجم الملف (مثال: الحد الأقصى 2MB)
+                    $maxSize = 2048; // بالكيلوبايت
+                    if ($data['cv']->getSize() > $maxSize * 1024) {
+                        throw new \Exception("File size exceeds the maximum allowed size of 2MB.");
+                    }
+
+                    // تخزين الملف
+                    $cvPath = $data['cv']->store('cvs', 'public');
+                    $data['cv'] = $cvPath; // حفظ المسار
+                } catch (\Exception $e) {
+                    // في حال وقوع خطأ في رفع السيرة الذاتية
+                    Log::error("CV upload error: " . $e->getMessage());
+                    return response()->json([
+                        'error' => 'CV upload failed.',
+                        'message' => $e->getMessage(),
+                        'mime_type' => isset($cvMimeType) ? $cvMimeType : 'N/A',
+                        'file_size' => isset($data['cv']) ? $data['cv']->getSize() : 'N/A',
+                    ], 400); // إرسال الخطأ مع التفاصيل إلى الـ frontend
                 }
             }
 
-
+            // التحقق من الرسالة (message) إذا كانت فارغة
             if (empty($data['message'])) {
                 $messageData = $this->generateAIMessage($data);
                 $data['message'] = $messageData['body'];
             }
 
+            // إنشاء المستخدم
             $user = User::create($data);
             $token = $user->createToken('auth_token')->plainTextToken;
             return [
