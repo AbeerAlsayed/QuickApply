@@ -10,18 +10,14 @@ class TestController extends Controller
 {
     protected $testService;
 
-public function __construct(TestService $testService)
-{
-    $this->testService = $testService ;
+    public function __construct(TestService $testService)
+    {
+        $this->testService = $testService ;
 
-}
+    }
     public function generateTest(TestRequest $request)
     {
         $data = $request->validated();
         return  $this->testService->storeTest($data);
-
-
-
-
-}
+    }
 }
