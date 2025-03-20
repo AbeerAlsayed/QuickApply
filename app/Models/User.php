@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\PositionEnum;
 use App\Traits\TimestampsFormat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -31,6 +32,10 @@ class User extends Authenticatable
         'message',
     ];
 
+
+    protected $casts = [
+        'position' => PositionEnum::class, // تحويل الحقل إلى Enum تلقائيًا
+    ];
     /**
      * The attributes that should be hidden for serialization.
      *
