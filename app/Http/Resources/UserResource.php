@@ -14,9 +14,9 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'education' => $this->education,
             'experience' => $this->experience,
-            'skills' => explode(',', $this->skills),
+            'skills' => $this->skills, // تحويل الـ skills من نص إلى مصفوفة
             'position' => $this->position,
-            'cv_path' => $this->cv ? url('storage/' . $this->cv) : null,
+            'cv_path' => $this->cv ? url('storage/' . $this->cv) : null, // تأكد من مسار السيرة الذاتية
             'message' => $this->message,
             'created_at' => $this->created_at,
         ];
