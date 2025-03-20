@@ -16,7 +16,6 @@ class PositionEnumResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'name' => $this->name,
             'value' => $this->value,
         ];
     }

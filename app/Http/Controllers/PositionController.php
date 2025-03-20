@@ -27,15 +27,14 @@ class PositionController extends BaseController
 
     public function getPositionsFromEnum()
     {
-        // Retrieve all cases from the PositionEnum
         $positions = PositionEnum::cases();
 
-        // Return the data as a collection of PositionEnumResource
-        return $this->sendSuccess(
-            PositionEnumResource::collection($positions), // استخدام collection بشكل صحيح
-            'Positions from Enum retrieved successfully'
-        );
+        $data = array_map(fn($position) => $position->value, $positions);
+
+        return $this->sendSuccess($data, 'Positions from Enum retrieved successfully');
     }
+
+
     public function store(PositionRequest $request)
     {
         $position = $this->positionService->create($request->validated());

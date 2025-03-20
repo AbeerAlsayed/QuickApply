@@ -33,8 +33,8 @@ Route::get('/export-company', [CompanyController::class, 'exportCompanies']);
 
 Route::post('/submissions/notify-companies', [SubmissionController::class, 'notifyCompanies'])
     ->middleware('auth:sanctum');
-Route::middleware('auth:sanctum')
-    ->get('/companies-by-country/{countryId}', [SubmissionController::class, 'getCompaniesByCountry']);
+Route::get('/companies-by-country', [SubmissionController::class, 'getCompaniesByCountry'])
+    ->middleware('auth:sanctum');
 
 
 
