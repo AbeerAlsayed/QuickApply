@@ -41,6 +41,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+
     /**
      * Get the attributes that should be cast.
      *
@@ -66,6 +67,10 @@ class User extends Authenticatable
     public function companies()
     {
         return $this->belongsToMany(Company::class, 'submissions')->withPivot('is_sent');
+    }
+    public function tests()
+    {
+        return $this->hasMany(Test::class);
     }
 
 }
