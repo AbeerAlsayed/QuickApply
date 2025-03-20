@@ -28,14 +28,17 @@ class UserService
                 $data['cv'] = $data['cv']->store('cvs', 'public');
             }
 
-            // معالجة توليد الرسالة
             if (empty($data['message'])) {
                 $messageData = $this->generateAIMessage($data);
-                $data['message'] = $messageData['body']; // تخزين نص الرسالة فقط
+                $data['message'] = $messageData['body'];
             }
 
-            // إنشاء المستخدم في قاعدة البيانات
-            return User::create($data);
+            $user = User::create($data);
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return [
+                'user' => $user,
+                'token' => $token,
+            ];
         });
     }
 

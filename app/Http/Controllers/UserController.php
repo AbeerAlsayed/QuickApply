@@ -47,9 +47,11 @@ class UserController extends BaseController
 
     public function store(UserRequest $request)
     {
-        $user = $this->userService->create($request->validated());
-        return $this->sendSuccess(new UserResource($user), 'User created successfully');
-    }
+        $data = $this->userService->create($request->validated());
+        return $this->sendSuccess([
+            'user' => new UserResource($data['user']),
+            'token' => $data['token']
+        ], 'User created successfully');    }
 
     public function update(UserRequest $request, User $user)
     {
