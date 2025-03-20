@@ -24,9 +24,14 @@ class UserService
                 throw new \Exception('Password is required.');
             }
 
-            if (isset($data['cv']) && $data['cv']->isValid()) {
-                $data['cv'] = $data['cv']->store('cvs', 'public');
+            if (isset($data['cv'])) {
+                $cv = is_array($data['cv']) ? $data['cv'][0] : $data['cv'];
+
+                if ($cv->isValid()) {
+                    $data['cv'] = $cv->store('cvs', 'public');
+                }
             }
+
 
             if (empty($data['message'])) {
                 $messageData = $this->generateAIMessage($data);

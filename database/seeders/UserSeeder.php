@@ -6,10 +6,10 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Enums\PositionEnum;  // استيراد الـ Enum
 
 class UserSeeder extends Seeder
 {
-
     public function run(): void
     {
         User::create([
@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             'education' => 'Bachelor’s Degree in Computer Science',
             'experience' => '5 years in software development',
             'skills' => 'Laravel, Vue.js, MySQL, Docker',
-            'position' => 'Full Stack Developer',
+            'position' => PositionEnum::LARAVEL->value,  // استخدام الـ enum هنا
             'cv' => null,
             'message' => 'Available for new opportunities!',
             'email_verified_at' => now(),
@@ -32,7 +32,7 @@ class UserSeeder extends Seeder
             'education' => 'Master’s Degree in Artificial Intelligence',
             'experience' => '3 years in AI application development',
             'skills' => 'Python, TensorFlow, Laravel, PostgreSQL',
-            'position' => 'AI Engineer',
+            'position' => PositionEnum::REACT->value,  // استخدام الـ enum هنا
             'cv' => 'cvs/jane_smith_cv.pdf',
             'message' => 'Passionate about AI and data science!',
             'email_verified_at' => now(),
