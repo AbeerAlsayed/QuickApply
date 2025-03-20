@@ -26,9 +26,18 @@ class UserService
 
             if (isset($data['cv']) && $data['cv'] instanceof \Illuminate\Http\UploadedFile) {
                 if ($data['cv']->isValid()) {
-                    $data['cv'] = $data['cv']->store('cvs', 'public');
+                    $path = $data['cv']->store('cvs', 'public');
+                    $data['cv'] = $path;
+
+                    // إرسال رسالة للـ frontend
+                    return response()->json([
+                        'message' => 'CV uploaded successfully!',
+                        'cv_path' => $path, // المسار الذي تم تخزين الملف فيه
+                    ], 200);
                 } else {
-                    throw new \Exception('Invalid CV file.');
+                    return response()->json([
+                        'message' => 'Invalid CV file.',
+                    ], 400);
                 }
             }
 
